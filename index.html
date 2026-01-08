@@ -6,11 +6,12 @@
 
 <style>
 :root{
-  --green1:#061913;
-  --green2:#0d3b2e;
-  --glass:rgba(255,255,255,0.1);
-  --border:rgba(255,255,255,0.2);
-  --accent:#9cffc7;
+  --bg1:#02120c;
+  --bg2:#063b2a;
+  --phosphor:#00ffb3;
+  --glass:rgba(255,255,255,.07);
+  --border:rgba(0,255,180,.25);
+  --text:#eafff4;
 }
 
 *{box-sizing:border-box}
@@ -18,86 +19,136 @@
 body{
   margin:0;
   font-family:Segoe UI,Arial,sans-serif;
-  background:linear-gradient(135deg,var(--green1),var(--green2));
-  color:#fff;
+  color:var(--text);
   min-height:100vh;
+  background:
+    radial-gradient(circle at 30% 20%,rgba(0,255,180,.12),transparent 45%),
+    radial-gradient(circle at 70% 80%,rgba(0,200,140,.10),transparent 50%),
+    linear-gradient(135deg,var(--bg1),var(--bg2));
+  position:relative;
+  overflow-x:hidden;
+}
+
+/* nano noise */
+body::after{
+  content:"";
+  position:fixed;
+  inset:0;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255,255,255,.03),
+      rgba(255,255,255,.03) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  pointer-events:none;
+  mix-blend-mode:overlay;
 }
 
 /* HEADER */
 header{
   text-align:center;
-  padding:25px 15px 10px;
+  padding:30px 15px 10px;
   font-size:22px;
   font-weight:600;
+  text-shadow:0 0 12px rgba(0,255,180,.35);
 }
 
 /* SEARCH */
 .search{
   display:flex;
   justify-content:center;
-  margin:10px 20px 25px;
+  margin:15px 20px 35px;
 }
 .search input{
   width:100%;
-  max-width:420px;
-  padding:12px 16px;
+  max-width:440px;
+  padding:14px 18px;
   border-radius:30px;
   border:1px solid var(--border);
   background:var(--glass);
   color:#fff;
   outline:none;
-  backdrop-filter:blur(10px);
+  backdrop-filter:blur(14px);
+  box-shadow:0 0 18px rgba(0,255,180,.25);
 }
 
 /* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-  gap:20px;
-  padding:0 20px 40px;
+  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  gap:24px;
+  padding:0 25px 40px;
 }
 
 /* CARD */
 .card{
-  background:var(--glass);
-  backdrop-filter:blur(12px);
-  border-radius:16px;
-  padding:25px 20px;
-  text-align:center;
-  cursor:pointer;
-  border:1px solid var(--border);
   position:relative;
-  transition:.35s;
+  min-height:90px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:18px;
+  background:var(--glass);
+  border-radius:18px;
+  border:1px solid var(--border);
+  backdrop-filter:blur(16px);
+  cursor:pointer;
+  transition:.4s;
   overflow:hidden;
+  box-shadow:
+    inset 0 0 20px rgba(0,255,180,.15),
+    0 0 20px rgba(0,255,180,.15);
 }
 
-/* nano effect */
+/* nano texture */
 .card::before{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);
-  opacity:0;
-  transition:.4s;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,.06),
+      rgba(255,255,255,.06) 1px,
+      transparent 1px,
+      transparent 4px
+    );
+  opacity:.35;
 }
-.card:hover::before{opacity:1}
-.card:hover{transform:translateY(-6px)}
 
+/* phosphor glow */
+.card::after{
+  content:"";
+  position:absolute;
+  inset:-40%;
+  background:radial-gradient(circle,var(--phosphor),transparent 60%);
+  opacity:.08;
+}
+
+.card:hover{
+  transform:translateY(-6px) scale(1.04);
+  box-shadow:
+    0 0 35px rgba(0,255,180,.65),
+    inset 0 0 25px rgba(0,255,180,.45);
+}
+
+/* VIEW */
 .hidden{display:none}
 
-/* SECTION VIEW */
 .back{
   margin:20px;
-  color:var(--accent);
   cursor:pointer;
-  font-size:16px;
+  opacity:.8;
 }
 
 .section-title{
   text-align:center;
   font-size:20px;
-  margin-bottom:30px;
-  opacity:.8;
+  margin-top:60px;
+  text-shadow:0 0 15px rgba(0,255,180,.4);
 }
 
 /* FOOTER */
@@ -105,24 +156,22 @@ footer{
   text-align:center;
   padding:15px;
   opacity:.7;
+  text-shadow:0 0 10px rgba(0,255,180,.3);
 }
 </style>
 </head>
 
 <body>
 
-<!-- 1. ÜST HİSSƏ -->
 <header>
 LDU-Aqrar və Mühəndislik fakültəsi<br>
 PDF arşivi
 </header>
 
-<!-- 6. AXTARIŞ -->
 <div class="search">
-  <input type="text" placeholder="PDF üzrə axtarış">
+  <input type="text" placeholder="Bütün PDF-lər üzrə axtarış">
 </div>
 
-<!-- 3. BÖLMƏLƏR -->
 <div id="sections" class="grid">
   <div class="card" onclick="openSection('Kompüter mühəndisliyi')">Kompüter mühəndisliyi</div>
   <div class="card" onclick="openSection('İnformasiya texnologiyaları')">İnformasiya texnologiyaları</div>
@@ -136,18 +185,14 @@ PDF arşivi
   <div class="card" onclick="openSection('Meşəçilik')">Meşəçilik</div>
 </div>
 
-<!-- 7. BÖLMƏYƏ GİRİŞ / ÇIXIŞ -->
 <div id="sectionView" class="hidden">
   <div class="back" onclick="goBack()">← geri</div>
   <div class="section-title" id="sectionTitle">
-    Bu bölməyə aid PDF-lər burada olacaq
+    Bu bölməyə aid PDF-lər burada görünəcək
   </div>
 </div>
 
-<!-- 2. ALT HİSSƏ -->
-<footer>
-by hbnedu.az
-</footer>
+<footer>by hbnedu.az</footer>
 
 <script>
 function openSection(name){
@@ -155,7 +200,6 @@ function openSection(name){
   sectionView.classList.remove("hidden");
   sectionTitle.innerText = name;
 }
-
 function goBack(){
   sectionView.classList.add("hidden");
   sections.classList.remove("hidden");
