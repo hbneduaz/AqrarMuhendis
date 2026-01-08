@@ -5,47 +5,113 @@
 <title>LDU – Aqrar və Mühəndislik fakültəsi | PDF arxivi</title>
 
 <style>
+:root{
+  --bg:#0b2e1e;
+  --card:rgba(255,255,255,.08);
+  --accent:#9cffc7;
+}
+
+*{box-sizing:border-box}
+
 body{
   margin:0;
-  font-family:Arial;
-  background:#0b2e1e;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#081c15,var(--bg));
   color:#fff;
+  min-height:100vh;
 }
-header{text-align:center;padding:20px;font-size:22px}
+
+header{
+  text-align:center;
+  padding:20px;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.search{
+  max-width:500px;
+  margin:0 auto 20px;
+  padding:0 20px;
+}
+
+.search input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  outline:none;
+}
+
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
-  gap:15px;
+  grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+  gap:16px;
   padding:20px;
 }
+
 .card{
-  background:rgba(255,255,255,.08);
+  background:var(--card);
   backdrop-filter:blur(8px);
-  padding:20px;
-  border-radius:12px;
-  cursor:pointer;
+  border-radius:14px;
+  padding:22px;
   text-align:center;
+  cursor:pointer;
+  transition:.3s;
+  border:1px solid rgba(255,255,255,.15);
 }
+
+.card:hover{
+  transform:translateY(-5px);
+  background:rgba(255,255,255,.12);
+}
+
 .hidden{display:none}
-.back{cursor:pointer;color:#9cffc7;margin:15px}
+
+.back{
+  cursor:pointer;
+  color:var(--accent);
+  margin:15px 20px;
+}
+
 .pdf{
-  background:rgba(255,255,255,.08);
-  padding:10px;
+  background:var(--card);
+  padding:12px;
+  margin:10px 20px;
   border-radius:8px;
-  margin-bottom:10px;
   display:flex;
   justify-content:space-between;
+  align-items:center;
 }
-footer{text-align:center;opacity:.6;padding:15px}
+
+.pdf a{
+  color:var(--accent);
+  text-decoration:none;
+  margin-left:10px;
+}
+
+footer{
+  text-align:center;
+  padding:15px;
+  opacity:.7;
+}
 </style>
 </head>
 
 <body>
 
-<header>LDU – Aqrar və Mühəndislik fakültəsi<br>PDF arxivi</header>
+<header>
+LDU – Aqrar və Mühəndislik fakültəsi<br>
+PDF arxivi
+</header>
 
+<div class="search">
+  <input type="text" id="search" placeholder="PDF axtar...">
+</div>
+
+<!-- BÖLMƏLƏR -->
 <div id="sections" class="grid"></div>
 
+<!-- PDF GÖRÜNÜŞ -->
 <div id="pdfView" class="hidden">
   <div class="back" onclick="goBack()">← geri</div>
   <div id="pdfList"></div>
@@ -55,44 +121,83 @@ footer{text-align:center;opacity:.6;padding:15px}
 
 <script>
 let data = {};
+let currentSection = "";
 
 fetch("pdfs.json")
-.then(r=>r.json())
-.then(d=>{
-  data=d;
-  const s=document.getElementById("sections");
-  Object.keys(data).forEach(k=>{
-    const c=document.createElement("div");
-    c.className="card";
-    c.innerText=k;
-    c.onclick=()=>openSection(k);
-    s.appendChild(c);
+.then(r => r.json())
+.then(d => {
+  data = d;
+  const container = document.getElementById("sections");
+  Object.keys(data).forEach(name => {
+    const card = document.createElement("div");
+    card.className = "card";
+    card.innerText = name;
+    card.onclick = () => openSection(name);
+    container.appendChild(card);
   });
 });
 
 function openSection(name){
+  currentSection = name;
   document.getElementById("sections").classList.add("hidden");
   document.getElementById("pdfView").classList.remove("hidden");
-  const list=document.getElementById("pdfList");
-  list.innerHTML="";
-  data[name].forEach(f=>{
-    const d=document.createElement("div");
-    d.className="pdf";
-    d.innerHTML=`
-      <span>${f}</span>
+  renderPDFs(data[name]);
+}
+
+function renderPDFs(list){
+  const box = document.getElementById("pdfList");
+  box.innerHTML = "";
+  list.forEach(file => {
+    const div = document.createElement("div");
+    div.className = "pdf";
+    div.innerHTML = `
+      <span>${file}</span>
       <span>
-        <a href="pdf/${name}/${f}" target="_blank">Aç</a>
-        |
-        <a href="pdf/${name}/${f}" download>Yüklə</a>
-      </span>`;
-    list.appendChild(d);
+        <a href="pdf/${currentSection}/${file}" target="_blank">Aç</a>
+        <a href="pdf/${currentSection}/${file}" download>Yüklə</a>
+      </span>
+    `;
+    box.appendChild(div);
   });
 }
 
 function goBack(){
   document.getElementById("pdfView").classList.add("hidden");
   document.getElementById("sections").classList.remove("hidden");
+  document.getElementById("search").value = "";
 }
+
+document.getElementById("search").addEventListener("input", function(){
+  const q = this.value.toLowerCase();
+  if(!q){
+    document.getElementById("pdfView").classList.add("hidden");
+    document.getElementById("sections").classList.remove("hidden");
+    return;
+  }
+  let results = [];
+  Object.keys(data).forEach(sec=>{
+    data[sec].forEach(f=>{
+      if(f.toLowerCase().includes(q)){
+        results.push({sec,f});
+      }
+    });
+  });
+  document.getElementById("sections").classList.add("hidden");
+  document.getElementById("pdfView").classList.remove("hidden");
+  const box = document.getElementById("pdfList");
+  box.innerHTML = "";
+  results.forEach(r=>{
+    const d = document.createElement("div");
+    d.className="pdf";
+    d.innerHTML = `
+      <span>${r.sec} / ${r.f}</span>
+      <span>
+        <a href="pdf/${r.sec}/${r.f}" target="_blank">Aç</a>
+        <a href="pdf/${r.sec}/${r.f}" download>Yüklə</a>
+      </span>`;
+    box.appendChild(d);
+  });
+});
 </script>
 
 </body>
