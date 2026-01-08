@@ -6,10 +6,10 @@
 
 <style>
 :root{
-  --bg1:#071a13;
-  --bg2:#0f3d2e;
-  --glass:rgba(255,255,255,.1);
-  --border:rgba(255,255,255,.18);
+  --green1:#061913;
+  --green2:#0d3b2e;
+  --glass:rgba(255,255,255,0.1);
+  --border:rgba(255,255,255,0.2);
   --accent:#9cffc7;
 }
 
@@ -18,11 +18,12 @@
 body{
   margin:0;
   font-family:Segoe UI,Arial,sans-serif;
-  background:linear-gradient(135deg,var(--bg1),var(--bg2));
+  background:linear-gradient(135deg,var(--green1),var(--green2));
   color:#fff;
   min-height:100vh;
 }
 
+/* HEADER */
 header{
   text-align:center;
   padding:25px 15px 10px;
@@ -30,10 +31,11 @@ header{
   font-weight:600;
 }
 
+/* SEARCH */
 .search{
   display:flex;
   justify-content:center;
-  margin:15px;
+  margin:10px 20px 25px;
 }
 .search input{
   width:100%;
@@ -47,18 +49,20 @@ header{
   backdrop-filter:blur(10px);
 }
 
+/* GRID */
 .grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
   gap:20px;
-  padding:20px;
+  padding:0 20px 40px;
 }
 
+/* CARD */
 .card{
   background:var(--glass);
   backdrop-filter:blur(12px);
   border-radius:16px;
-  padding:25px;
+  padding:25px 20px;
   text-align:center;
   cursor:pointer;
   border:1px solid var(--border);
@@ -66,11 +70,13 @@ header{
   transition:.35s;
   overflow:hidden;
 }
+
+/* nano effect */
 .card::before{
   content:"";
   position:absolute;
   inset:0;
-  background:linear-gradient(120deg,transparent,rgba(255,255,255,.3),transparent);
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.35),transparent);
   opacity:0;
   transition:.4s;
 }
@@ -79,132 +85,81 @@ header{
 
 .hidden{display:none}
 
+/* SECTION VIEW */
 .back{
   margin:20px;
   color:var(--accent);
   cursor:pointer;
+  font-size:16px;
 }
 
-.pdf-list{
-  max-width:900px;
-  margin:auto;
-  padding:20px;
+.section-title{
+  text-align:center;
+  font-size:20px;
+  margin-bottom:30px;
+  opacity:.8;
 }
 
-.pdf-item{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:var(--glass);
-  border:1px solid var(--border);
-  border-radius:12px;
-  padding:12px 16px;
-  margin-bottom:10px;
-  backdrop-filter:blur(10px);
-}
-
-.pdf-item a{
-  color:var(--accent);
-  text-decoration:none;
-  margin-left:10px;
-}
-
+/* FOOTER */
 footer{
   text-align:center;
   padding:15px;
-  opacity:.65;
+  opacity:.7;
 }
 </style>
 </head>
 
 <body>
 
+<!-- 1. ÜST HİSSƏ -->
 <header>
-LDU – Aqrar və Mühəndislik fakültəsi<br>PDF arxivi
+LDU-Aqrar və Mühəndislik fakültəsi<br>
+PDF arşivi
 </header>
 
+<!-- 6. AXTARIŞ -->
 <div class="search">
-  <input id="search" placeholder="Bütün PDF-lər üzrə axtarış">
+  <input type="text" placeholder="PDF üzrə axtarış">
 </div>
 
-<!-- BÖLMƏLƏR -->
-<div id="sections" class="grid"></div>
+<!-- 3. BÖLMƏLƏR -->
+<div id="sections" class="grid">
+  <div class="card" onclick="openSection('Kompüter mühəndisliyi')">Kompüter mühəndisliyi</div>
+  <div class="card" onclick="openSection('İnformasiya texnologiyaları')">İnformasiya texnologiyaları</div>
+  <div class="card" onclick="openSection('İnformasiya təhlükəsizliyi')">İnformasiya təhlükəsizliyi</div>
+  <div class="card" onclick="openSection('Qida mühəndisliyi')">Qida mühəndisliyi</div>
+  <div class="card" onclick="openSection('Şərabçılıq')">Şərabçılıq</div>
+  <div class="card" onclick="openSection('Aqromühəndislik')">Aqromühəndislik</div>
+  <div class="card" onclick="openSection('Aqronomluq')">Aqronomluq</div>
+  <div class="card" onclick="openSection('Bağçılıq və tərəvəzçilik')">Bağçılıq və tərəvəzçilik</div>
+  <div class="card" onclick="openSection('Torpaqşünaslıq və aqrokimya')">Torpaqşünaslıq və aqrokimya</div>
+  <div class="card" onclick="openSection('Meşəçilik')">Meşəçilik</div>
+</div>
 
-<!-- BÖLMƏ DAXİLİ -->
+<!-- 7. BÖLMƏYƏ GİRİŞ / ÇIXIŞ -->
 <div id="sectionView" class="hidden">
   <div class="back" onclick="goBack()">← geri</div>
-  <div class="pdf-list" id="pdfList"></div>
+  <div class="section-title" id="sectionTitle">
+    Bu bölməyə aid PDF-lər burada olacaq
+  </div>
 </div>
 
-<footer>by hbnedu.az</footer>
+<!-- 2. ALT HİSSƏ -->
+<footer>
+by hbnedu.az
+</footer>
 
 <script>
-let data = {};
-let currentSection = "";
-
-/* JSON avtomatik script tərəfindən yaradılır */
-fetch("data.json")
-.then(r=>r.json())
-.then(j=>{
-  data=j;
-  renderSections();
-});
-
-function renderSections(){
-  sections.innerHTML="";
-  for(let sec in data){
-    let d=document.createElement("div");
-    d.className="card";
-    d.innerText=sec;
-    d.onclick=()=>openSection(sec);
-    sections.appendChild(d);
-  }
-}
-
 function openSection(name){
-  currentSection=name;
   sections.classList.add("hidden");
   sectionView.classList.remove("hidden");
-  renderPDFs(data[name]);
-}
-
-function renderPDFs(list){
-  pdfList.innerHTML="";
-  list.forEach(p=>{
-    let div=document.createElement("div");
-    div.className="pdf-item";
-    div.innerHTML=`
-      <span>${p.name}</span>
-      <span>
-        <a href="${p.path}" target="_blank">Aç</a>
-        <a href="${p.path}" download>Yüklə</a>
-      </span>`;
-    pdfList.appendChild(div);
-  });
+  sectionTitle.innerText = name;
 }
 
 function goBack(){
   sectionView.classList.add("hidden");
   sections.classList.remove("hidden");
 }
-
-/* ÜMUMİ AXTARIŞ */
-search.oninput=()=>{
-  let q=search.value.toLowerCase();
-  if(!q){renderSections();return;}
-  sections.innerHTML="";
-  for(let sec in data){
-    data[sec].forEach(p=>{
-      if(p.name.toLowerCase().includes(q)){
-        let d=document.createElement("div");
-        d.className="card";
-        d.innerText=`${p.name} (${sec})`;
-        d.onclick=()=>openSection(sec);
-        sections.appendChild(d);
-      }
-    });
-  }
-};
 </script>
 
 </body>
