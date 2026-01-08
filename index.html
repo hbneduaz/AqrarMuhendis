@@ -1,15 +1,204 @@
 <!DOCTYPE html>
 <html lang="az">
 <head>
-  <meta charset="UTF-8">
-  <title>LDU – Aqrar və Mühəndislik fakültəsi | PDF arxivi</title>
-</head>
-<body>
-  <h1>LDU – Aqrar və Mühəndislik fakültəsi</h1>
-  <p>PDF arxivi</p>
+<meta charset="UTF-8">
+<title>LDU – Aqrar və Mühəndislik fakültəsi | PDF arxivi</title>
 
-  <footer>
-    by hbnedu.az
-  </footer>
+<style>
+:root{
+  --green:#0f3d2e;
+  --green2:#145a32;
+  --glass:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box}
+
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:linear-gradient(135deg,#081c15,#0f3d2e);
+  color:#fff;
+  min-height:100vh;
+}
+
+header{
+  padding:20px;
+  text-align:center;
+  font-size:22px;
+  font-weight:bold;
+}
+
+.search{
+  max-width:500px;
+  margin:10px auto 30px;
+  padding:10px;
+}
+
+.search input{
+  width:100%;
+  padding:12px;
+  border-radius:8px;
+  border:none;
+  outline:none;
+}
+
+.container{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  gap:20px;
+  padding:20px;
+}
+
+.card{
+  background:var(--glass);
+  backdrop-filter:blur(8px);
+  border-radius:14px;
+  padding:25px;
+  cursor:pointer;
+  transition:.3s;
+  border:1px solid rgba(255,255,255,.15);
+}
+
+.card:hover{
+  transform:translateY(-5px);
+  background:rgba(255,255,255,0.12);
+}
+
+.card h3{
+  margin:0;
+  text-align:center;
+}
+
+.section{
+  display:none;
+  padding:20px;
+}
+
+.back{
+  margin-bottom:15px;
+  cursor:pointer;
+  color:#9cffc7;
+}
+
+.pdf{
+  background:var(--glass);
+  padding:12px;
+  margin-bottom:10px;
+  border-radius:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.pdf button{
+  background:var(--green2);
+  border:none;
+  color:white;
+  padding:6px 10px;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+footer{
+  text-align:center;
+  padding:15px;
+  opacity:.7;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+LDU – Aqrar və Mühəndislik fakültəsi<br>
+PDF arxivi
+</header>
+
+<div class="search">
+  <input type="text" placeholder="PDF axtar... (hazırdır)">
+</div>
+
+<!-- BÖLMƏLƏR -->
+<div class="container" id="sections">
+
+  <div class="card" onclick="openSection('komp')">
+    <h3>Kompüter mühəndisliyi</h3>
+  </div>
+
+  <div class="card" onclick="openSection('it')">
+    <h3>İnformasiya texnologiyaları</h3>
+  </div>
+
+  <div class="card" onclick="openSection('info-sec')">
+    <h3>İnformasiya təhlükəsizliyi</h3>
+  </div>
+
+  <div class="card" onclick="openSection('food')">
+    <h3>Qida mühəndisliyi</h3>
+  </div>
+
+  <div class="card" onclick="openSection('wine')">
+    <h3>Şərabçılıq</h3>
+  </div>
+
+  <div class="card" onclick="openSection('agro-eng')">
+    <h3>Aqromühəndislik</h3>
+  </div>
+
+  <div class="card" onclick="openSection('agro')">
+    <h3>Aqronomluq</h3>
+  </div>
+
+  <div class="card" onclick="openSection('garden')">
+    <h3>Bağçılıq və tərəvəzçilik</h3>
+  </div>
+
+  <div class="card" onclick="openSection('soil')">
+    <h3>Torpaqşünaslıq və aqrokimya</h3>
+  </div>
+
+  <div class="card" onclick="openSection('forest')">
+    <h3>Meşəçilik</h3>
+  </div>
+
+</div>
+
+<!-- BÖLMƏ İÇİ (placeholder) -->
+<div class="section" id="sectionView">
+  <div class="back" onclick="goBack()">← geri</div>
+
+  <div class="pdf">
+    <span>Nümunə PDF 1</span>
+    <div>
+      <button>Aç</button>
+      <button>Yüklə</button>
+    </div>
+  </div>
+
+  <div class="pdf">
+    <span>Nümunə PDF 2</span>
+    <div>
+      <button>Aç</button>
+      <button>Yüklə</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+by hbnedu.az
+</footer>
+
+<script>
+function openSection(id){
+  document.getElementById("sections").style.display="none";
+  document.getElementById("sectionView").style.display="block";
+}
+
+function goBack(){
+  document.getElementById("sectionView").style.display="none";
+  document.getElementById("sections").style.display="grid";
+}
+</script>
+
 </body>
 </html>
