@@ -6,8 +6,9 @@
 
 <style>
 :root{
-  --bg:#0b2e1e;
-  --card:rgba(255,255,255,.08);
+  --bg1:#081c15;
+  --bg2:#0f3d2e;
+  --glass:rgba(255,255,255,.08);
   --accent:#9cffc7;
 }
 
@@ -16,44 +17,30 @@
 body{
   margin:0;
   font-family:Arial, sans-serif;
-  background:linear-gradient(135deg,#081c15,var(--bg));
+  background:linear-gradient(135deg,var(--bg1),var(--bg2));
   color:#fff;
   min-height:100vh;
 }
 
 header{
   text-align:center;
-  padding:20px;
+  padding:25px;
   font-size:22px;
   font-weight:bold;
-}
-
-.search{
-  max-width:500px;
-  margin:0 auto 20px;
-  padding:0 20px;
-}
-
-.search input{
-  width:100%;
-  padding:12px;
-  border-radius:8px;
-  border:none;
-  outline:none;
 }
 
 .grid{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
-  gap:16px;
+  gap:20px;
   padding:20px;
 }
 
 .card{
-  background:var(--card);
+  background:var(--glass);
   backdrop-filter:blur(8px);
   border-radius:14px;
-  padding:22px;
+  padding:25px;
   text-align:center;
   cursor:pointer;
   transition:.3s;
@@ -61,32 +48,29 @@ header{
 }
 
 .card:hover{
-  transform:translateY(-5px);
+  transform:translateY(-6px);
   background:rgba(255,255,255,.12);
 }
 
 .hidden{display:none}
 
 .back{
+  color:var(--accent);
   cursor:pointer;
-  color:var(--accent);
-  margin:15px 20px;
+  margin:20px;
+  font-size:16px;
 }
 
-.pdf{
-  background:var(--card);
-  padding:12px;
-  margin:10px 20px;
-  border-radius:8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.section-title{
+  text-align:center;
+  font-size:20px;
+  margin-bottom:15px;
 }
 
-.pdf a{
-  color:var(--accent);
-  text-decoration:none;
-  margin-left:10px;
+.placeholder{
+  text-align:center;
+  opacity:.7;
+  padding:40px 20px;
 }
 
 footer{
@@ -104,100 +88,44 @@ LDU – Aqrar və Mühəndislik fakültəsi<br>
 PDF arxivi
 </header>
 
-<div class="search">
-  <input type="text" id="search" placeholder="PDF axtar...">
-</div>
-
 <!-- BÖLMƏLƏR -->
-<div id="sections" class="grid"></div>
-
-<!-- PDF GÖRÜNÜŞ -->
-<div id="pdfView" class="hidden">
-  <div class="back" onclick="goBack()">← geri</div>
-  <div id="pdfList"></div>
+<div id="sections" class="grid">
+  <div class="card" onclick="openSection('Kompüter mühəndisliyi')">Kompüter mühəndisliyi</div>
+  <div class="card" onclick="openSection('İnformasiya texnologiyaları')">İnformasiya texnologiyaları</div>
+  <div class="card" onclick="openSection('İnformasiya təhlükəsizliyi')">İnformasiya təhlükəsizliyi</div>
+  <div class="card" onclick="openSection('Qida mühəndisliyi')">Qida mühəndisliyi</div>
+  <div class="card" onclick="openSection('Şərabçılıq')">Şərabçılıq</div>
+  <div class="card" onclick="openSection('Aqromühəndislik')">Aqromühəndislik</div>
+  <div class="card" onclick="openSection('Aqronomluq')">Aqronomluq</div>
+  <div class="card" onclick="openSection('Bağçılıq və tərəvəzçilik')">Bağçılıq və tərəvəzçilik</div>
+  <div class="card" onclick="openSection('Torpaqşünaslıq və aqrokimya')">Torpaqşünaslıq və aqrokimya</div>
+  <div class="card" onclick="openSection('Meşəçilik')">Meşəçilik</div>
 </div>
 
-<footer>by hbnedu.az</footer>
+<!-- BÖLMƏ DAXİLİ -->
+<div id="sectionView" class="hidden">
+  <div class="back" onclick="goBack()">← geri</div>
+  <div class="section-title" id="sectionTitle"></div>
+  <div class="placeholder">
+    Bu bölməyə aid PDF-lər burada göstəriləcək.
+  </div>
+</div>
+
+<footer>
+by hbnedu.az
+</footer>
 
 <script>
-let data = {};
-let currentSection = "";
-
-fetch("pdfs.json")
-.then(r => r.json())
-.then(d => {
-  data = d;
-  const container = document.getElementById("sections");
-  Object.keys(data).forEach(name => {
-    const card = document.createElement("div");
-    card.className = "card";
-    card.innerText = name;
-    card.onclick = () => openSection(name);
-    container.appendChild(card);
-  });
-});
-
 function openSection(name){
-  currentSection = name;
   document.getElementById("sections").classList.add("hidden");
-  document.getElementById("pdfView").classList.remove("hidden");
-  renderPDFs(data[name]);
-}
-
-function renderPDFs(list){
-  const box = document.getElementById("pdfList");
-  box.innerHTML = "";
-  list.forEach(file => {
-    const div = document.createElement("div");
-    div.className = "pdf";
-    div.innerHTML = `
-      <span>${file}</span>
-      <span>
-        <a href="pdf/${currentSection}/${file}" target="_blank">Aç</a>
-        <a href="pdf/${currentSection}/${file}" download>Yüklə</a>
-      </span>
-    `;
-    box.appendChild(div);
-  });
+  document.getElementById("sectionView").classList.remove("hidden");
+  document.getElementById("sectionTitle").innerText = name;
 }
 
 function goBack(){
-  document.getElementById("pdfView").classList.add("hidden");
+  document.getElementById("sectionView").classList.add("hidden");
   document.getElementById("sections").classList.remove("hidden");
-  document.getElementById("search").value = "";
 }
-
-document.getElementById("search").addEventListener("input", function(){
-  const q = this.value.toLowerCase();
-  if(!q){
-    document.getElementById("pdfView").classList.add("hidden");
-    document.getElementById("sections").classList.remove("hidden");
-    return;
-  }
-  let results = [];
-  Object.keys(data).forEach(sec=>{
-    data[sec].forEach(f=>{
-      if(f.toLowerCase().includes(q)){
-        results.push({sec,f});
-      }
-    });
-  });
-  document.getElementById("sections").classList.add("hidden");
-  document.getElementById("pdfView").classList.remove("hidden");
-  const box = document.getElementById("pdfList");
-  box.innerHTML = "";
-  results.forEach(r=>{
-    const d = document.createElement("div");
-    d.className="pdf";
-    d.innerHTML = `
-      <span>${r.sec} / ${r.f}</span>
-      <span>
-        <a href="pdf/${r.sec}/${r.f}" target="_blank">Aç</a>
-        <a href="pdf/${r.sec}/${r.f}" download>Yüklə</a>
-      </span>`;
-    box.appendChild(d);
-  });
-});
 </script>
 
 </body>
